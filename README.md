@@ -14,7 +14,7 @@ dependencies:
 
 ## Usage
 
-- config
+#### config (ex. `config.toml` )
 
 ```toml
 verbose = false
@@ -25,7 +25,7 @@ port = 6379
 cmds = ["GET", "SET"]
 ```
 
-- code
+#### code
 
 ```crystal
 require "toml-config"
