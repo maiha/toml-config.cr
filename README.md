@@ -1,6 +1,9 @@
-# toml-config
+# toml-config [![Build Status](https://travis-ci.org/maiha/toml-config.cr.svg?branch=master)](https://travis-ci.org/maiha/toml-config.cr)
 
 handy use of `crystal-toml`
+
+- tested on crystal-0.18.7
+- https://github.com/manastech/crystal-toml
 
 ## Installation
 
@@ -9,7 +12,7 @@ Add this to your application's `shard.yml`:
 ```yaml
 dependencies:
   toml-config:
-    github: maiha/toml-config
+    github: maiha/toml-config.cr
 ```
 
 ## Usage
