@@ -55,6 +55,10 @@ config.str("xxx")              # => TOML::Config::NotFound
 config.str("xxx")?             # => nil
 ```
 
+## Examples
+
+- https://github.com/maiha/dstat-redis.cr/blob/master/src/bin/main.cr
+
 ## Contributing
 
 1. Fork it ( https://github.com/maiha/toml-config/fork )
