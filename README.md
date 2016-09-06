@@ -2,8 +2,11 @@
 
 handy use of `crystal-toml`
 
-- tested on crystal-0.19.0
 - https://github.com/manastech/crystal-toml
+
+#### crystal versions
+- v0.1.0 for crystal-0.18.x
+- v0.2.0 for crystal-0.19.0 or higher
 
 ## Installation
 
