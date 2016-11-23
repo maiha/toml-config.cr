@@ -7,6 +7,7 @@ handy use of `crystal-toml`
 #### crystal versions
 - v0.1.0 for crystal-0.18.x
 - v0.2.0 for crystal-0.19.0 or higher
+- WIP: trying crystal-0.20.0
 
 ## Installation
 
