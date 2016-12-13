@@ -71,6 +71,30 @@ class TOML::Config
     self[key].as(Array).map(&.as(Int64).to_i32).as(Array(Int32))
   end
 
+  def float64(key) : Float64
+    self[key].as(Float64)
+  end
+
+  def float64?(key) : Float64?
+    self[key]?.try(&.as(Float64))
+  end
+
+  def float64s(key) : Array(Float64)
+    self[key].as(Array).map(&.as(Float64))
+  end
+
+  def float(key)
+    float64(key)
+  end
+
+  def float?(key)
+    float64?(key)
+  end
+
+  def floats(key)
+    float64s(key)
+  end
+
   def bool(key) : Bool
     if self[key]?
       self[key].as(Bool)
