@@ -1,10 +1,13 @@
 name: toml-config
-version: 0.2.0
+version: 0.2.1
 
 dependencies:
   toml:
-    github: manastech/crystal-toml
-    version: 0.5.0
+    # github: manastech/crystal-toml
+    # version: 0.5.0
+    # # until crystal-0.20 patch will be merged
+    github: maiha/crystal-toml
+    version: 0.6.0
 
 authors:
   - maiha <maiha@wota.jp>
