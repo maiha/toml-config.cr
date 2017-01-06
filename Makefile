@@ -1,8 +1,12 @@
-SHELL = /bin/bash
+SHELL=/bin/bash
 
-.PHONY : all test spec
+.PHONY : test
+test: spec check_version_mismatch
 
-test: spec
-
+.PHONY : spec
 spec:
-	crystal spec -v
+	crystal spec -v --fail-fast
+
+.PHONY : check_version_mismatch
+check_version_mismatch: shard.yml README.md
+	diff -w -c <(grep version: README.md | head -1) <(grep ^version: shard.yml)
