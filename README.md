@@ -7,6 +7,7 @@ handy use of `crystal-toml`
 #### crystal versions
 - v0.1.0 for crystal-0.18.x
 - v0.2.0 for crystal-0.19.x, 0.20.4
+- v0.3.0 for crystal-0.22.x
 
 ## Installation
 
@@ -16,7 +17,7 @@ Add this to your application's `shard.yml`:
 dependencies:
   toml-config:
     github: maiha/toml-config.cr
-    version: 0.2.1
+    version: 0.3.0
 ```
 
 ## Usage
