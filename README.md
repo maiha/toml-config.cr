@@ -54,6 +54,7 @@ config.["redis/port"].class    # => Int64 (TOML default)
 config.strs("redis/cmds")      # => ["GET, "SET"]
 config.str("xxx")              # => TOML::Config::NotFound
 config.str("xxx")?             # => nil
+config.hash("redis").keys      # => ["host", "port", "cmds"]
 ```
 
 ## Examples

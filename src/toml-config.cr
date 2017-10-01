@@ -14,7 +14,9 @@ class TOML::Config
     new(TOML.parse_file(file))
   end
 
-  def initialize(toml : Type)
+  getter toml
+
+  def initialize(@toml : Type)
     @paths = Hash(String, TOML::Type).new
     build_path(toml, "")
   end
@@ -101,6 +103,10 @@ class TOML::Config
     else
       false
     end
+  end
+
+  def hash(key) : Hash
+    toml[key].as(Hash)
   end
 
   ######################################################################

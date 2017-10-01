@@ -138,6 +138,10 @@ describe TOML::Config do
         config.floats("log/XXXX")
       end
     end
+
+    it "hash" do
+      config.hash("redis").should eq({"host" => "127.0.0.1", "port" => 6379, "cmds" => ["GET", "SET"], "save" => [900, 1]})
+    end
   end
 
   describe "[]?" do
