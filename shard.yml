@@ -9,7 +9,8 @@ dependencies:
     # version: 0.5.0
     # # until crystal-0.20 patch will be merged
     github: maiha/crystal-toml
-    version: ~> 0.6.0
+    # version: ~> 0.6.0
+    branch: crystal-0.24.0
 
 authors:
   - maiha <maiha@wota.jp>
