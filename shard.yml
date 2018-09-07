@@ -1,7 +1,5 @@
 name: toml-config
-version: 0.3.1
-
-crystal: 0.24.1
+version: 0.3.2
 
 dependencies:
   toml:
@@ -10,7 +8,7 @@ dependencies:
     # # until crystal-0.20 patch will be merged
     github: maiha/crystal-toml
     # version: ~> 0.6.0
-    branch: crystal-0.24.1
+    branch: crystal-0.25
 
 authors:
   - maiha <maiha@wota.jp>
