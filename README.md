@@ -10,17 +10,6 @@ handy use of `crystal-toml`
 - v0.3.1 for crystal-0.23.x, 0.24.x
 - v0.3.2 for crystal-0.25.x, 0.26.x
 
-## Installation
-
-Add this to your application's `shard.yml`:
-
-```yaml
-dependencies:
-  toml-config:
-    github: maiha/toml-config.cr
-    version: 0.3.2
-```
-
 ## Usage
 
 #### config (ex. `config.toml` )
@@ -37,8 +26,6 @@ cmds = ["GET", "SET"]
 #### code
 
 ```crystal
-require "toml-config"
-
 config = TOML::Config.parse_file("config.toml")
 config["verbose"]          # => false
 config["xxx"]?             # => nil
@@ -59,9 +46,37 @@ config.str("xxx")?             # => nil
 config.hash("redis").keys      # => ["host", "port", "cmds"]
 ```
 
+#### custom class
+
+```crystal
+class RedisConfig < TOML::Config
+  bool verbose
+  str  "redis/host", host
+end
+
+config = RedisConfig.parse_file("config.toml")
+config.verbose? # => false
+config.host     # => "127.0.0.1"
+```
+
 ## Examples
 
 - https://github.com/maiha/dstat-redis.cr/blob/master/src/bin/main.cr
+
+## Installation
+
+Add this to your application's `shard.yml`:
+
+```yaml
+dependencies:
+  toml-config:
+    github: maiha/toml-config.cr
+    version: 0.3.2
+```
+
+```crystal
+require "toml-config"
+```
 
 ## Contributing
 

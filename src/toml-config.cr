@@ -110,6 +110,73 @@ class TOML::Config
   end
 
   ######################################################################
+  ### DSL macros
+
+  macro bool(key, m = nil)
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}?
+      self.bool({{key.id.stringify}})
+    end
+
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Bool)
+      @paths[{{key.id.stringify}}] = v
+    end
+
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Nil)
+    end
+  end
+
+  macro str(key, m = nil)
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}?
+      self.str?({{key.id.stringify}})
+    end
+
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}
+      self.str({{key.id.stringify}})
+    end
+
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : String)
+      @paths[{{key.id.stringify}}] = v
+    end
+
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Nil)
+    end
+  end
+
+  macro int(key, m = nil)
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}?
+      self.int?({{key.id.stringify}})
+    end
+
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}
+      self.int({{key.id.stringify}})
+    end
+
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Int64)
+      @paths[{{key.id.stringify}}] = v
+    end
+
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Nil)
+    end
+  end
+
+  macro float(key, m = nil)
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}?
+      self.float?({{key.id.stringify}})
+    end
+
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}
+      self.float({{key.id.stringify}})
+    end
+
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Float64)
+      @paths[{{key.id.stringify}}] = v
+    end
+
+    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Nil)
+    end
+  end
+
+  ######################################################################
   ### Internal Functions
   
   protected def not_found(key)
