@@ -71,7 +71,7 @@ Add this to your application's `shard.yml`:
 dependencies:
   toml-config:
     github: maiha/toml-config.cr
-    version: 0.3.2
+    version: 0.4.0
 ```
 
 ```crystal
