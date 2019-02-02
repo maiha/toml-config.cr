@@ -105,8 +105,12 @@ class TOML::Config
     end
   end
 
-  def hash(key) : Hash
-    toml[key].as(Hash)
+  def as_hash(key : String) : Hash
+    self[key].as(Hash)
+  end
+
+  def as_hash?(key : String)
+    self[key]?.try(&.as(Hash))
   end
 
   ######################################################################
@@ -176,6 +180,17 @@ class TOML::Config
     end
   end
 
+  macro as_hash(key, m = nil)
+    {% method = (m || key.id).stringify.gsub(/\//, "_").id %}
+    def {{method}}?
+      self.as_hash?({{key.id.stringify}})
+    end
+
+    def {{method}}
+      self.as_hash({{key.id.stringify}})
+    end
+  end
+  
   ######################################################################
   ### Internal Functions
   
@@ -189,9 +204,8 @@ class TOML::Config
       toml.each do |(key, val)|
         build_path(val, path.empty? ? key : "#{path}/#{key}")
       end
-    else
-      @paths[path] = toml
     end
+    @paths[path] = toml
   end
 
   # TODO

@@ -4,12 +4,6 @@ handy use of `crystal-toml`
 
 - https://github.com/manastech/crystal-toml
 
-#### crystal versions
-- v0.1.0 for crystal-0.18.x
-- v0.2.0 for crystal-0.19.x, 0.20.4
-- v0.3.1 for crystal-0.23.x, 0.24.x
-- v0.3.2 for crystal-0.25.x, 0.26.x
-
 ## Usage
 
 #### config (ex. `config.toml` )
@@ -43,7 +37,7 @@ config.["redis/port"].class    # => Int64 (TOML default)
 config.strs("redis/cmds")      # => ["GET, "SET"]
 config.str("xxx")              # => TOML::Config::NotFound
 config.str("xxx")?             # => nil
-config.hash("redis").keys      # => ["host", "port", "cmds"]
+config.as_hash("redis").keys   # => ["host", "port", "cmds"]
 ```
 
 #### custom class
@@ -52,11 +46,14 @@ config.hash("redis").keys      # => ["host", "port", "cmds"]
 class RedisConfig < TOML::Config
   bool verbose
   str  "redis/host", host
+
+  as_hash "redis"
 end
 
 config = RedisConfig.parse_file("config.toml")
-config.verbose? # => false
-config.host     # => "127.0.0.1"
+config.verbose?   # => false
+config.host       # => "127.0.0.1"
+config.redis.keys # => ["host", "port", "cmds"]
 ```
 
 ## Examples
@@ -77,6 +74,17 @@ dependencies:
 ```crystal
 require "toml-config"
 ```
+
+## Breaking Changes
+
+#### v0.5.0
+- `#hash` renamed to `#as_hash` to respect `Object#hash`
+
+#### for old crystal
+- v0.1.0 for crystal-0.18.x
+- v0.2.0 for crystal-0.19.x, 0.20.4
+- v0.3.1 for crystal-0.23.x, 0.24.x
+- v0.3.2 for crystal-0.25.x, or higher
 
 ## Contributing
 
