@@ -3,8 +3,8 @@ version: 0.5.0
 
 dependencies:
   toml:
-    github: crystal-community/crystal-toml
-    version: ">= 0.6.1"
+    github: crystal-community/toml.cr
+    commit: d02de85eed68a70dc97ab6d6e52831a4d0e890fe
 
 authors:
   - maiha <maiha@wota.jp>
