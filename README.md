@@ -3,6 +3,7 @@
 handy use of `crystal-toml`
 
 - https://github.com/manastech/crystal-toml
+- **supported versions** : 0.27.2 0.31.1 0.32.1 0.33.0 0.34.0
 
 ## Usage
 
