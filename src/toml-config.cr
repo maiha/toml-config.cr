@@ -39,7 +39,7 @@ class TOML::Config
   end
 
   ######################################################################
-  ### Syntax sugars to fix type
+  ### Typed API
   
   def str(key) : String
     self[key].as(String)
@@ -105,6 +105,10 @@ class TOML::Config
     end
   end
 
+  def bool?(key) : Bool
+    self.bool(key)
+  end
+
   def as_hash(key : String) : Hash
     self[key].as(Hash)
   end
@@ -116,78 +120,54 @@ class TOML::Config
   ######################################################################
   ### DSL macros
 
-  macro bool(key, m = nil)
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}?
-      self.bool({{key.id.stringify}})
-    end
+  TYPE_MAPS = [
+    {"bool", "Bool"},
+    {"str", "String"},
+    {"int", "Int64"},
+    {"float", "Float64"},
+  ]
 
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Bool)
-      @paths[{{key.id.stringify}}] = v
-    end
+  {% for tuple in TYPE_MAPS %}
+    {%
+      type_s  = tuple[0].id
+      klass_s = tuple[1].id
+    %}
 
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Nil)
-    end
-  end
+    macro {{type_s}}(key, m = nil)
+      \{%
+        method = (m || key.id).stringify.gsub(/\//, "_").id
+        key_s  = key.id.stringify
+      %}
 
-  macro str(key, m = nil)
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}?
-      self.str?({{key.id.stringify}})
-    end
+      def \{{method}}?
+        self.{{type_s}}?(\{{key_s}})
+      end
+                                 
+      def \{{method}}
+        self.{{type_s}}(\{{key_s}})
+      end
 
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}
-      self.str({{key.id.stringify}})
-    end
+      def \{{method}}=(v : {{klass_s}})
+        @paths[\{{key_s}}] = v
+      end
 
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : String)
-      @paths[{{key.id.stringify}}] = v
+      def \{{method}}=(v : Nil)
+      end
     end
-
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Nil)
-    end
-  end
-
-  macro int(key, m = nil)
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}?
-      self.int?({{key.id.stringify}})
-    end
-
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}
-      self.int({{key.id.stringify}})
-    end
-
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Int64)
-      @paths[{{key.id.stringify}}] = v
-    end
-
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Nil)
-    end
-  end
-
-  macro float(key, m = nil)
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}?
-      self.float?({{key.id.stringify}})
-    end
-
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}
-      self.float({{key.id.stringify}})
-    end
-
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Float64)
-      @paths[{{key.id.stringify}}] = v
-    end
-
-    def {{(m || key.id).stringify.gsub(/\//, "_").id}}=(v : Nil)
-    end
-  end
+  {% end %}
 
   macro as_hash(key, m = nil)
-    {% method = (m || key.id).stringify.gsub(/\//, "_").id %}
+    {%
+      method = (m || key.id).stringify.gsub(/\//, "_").id
+      key_s = key.id.stringify
+    %}
+    
     def {{method}}?
-      self.as_hash?({{key.id.stringify}})
+      self.as_hash?({{key_s}})
     end
 
     def {{method}}
-      self.as_hash({{key.id.stringify}})
+      self.as_hash({{key_s}})
     end
   end
   
