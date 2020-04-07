@@ -199,8 +199,7 @@ class TOML::Config
   end
 
   private def build_path(toml, path)
-    case toml
-    when Hash
+    if toml.is_a?(Hash)
       toml.each do |(key, val)|
         build_path(val, path.empty? ? key : "#{path}/#{key}")
       end
