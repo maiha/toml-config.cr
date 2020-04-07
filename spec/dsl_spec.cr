@@ -6,6 +6,7 @@ private class Config < TOML::Config
   int  "redis/port"
   int  "redis/db", db
   str  "redis/xxx"
+  strs "redis/cmds", cmds
 end
 
 describe "TOML::Config(dsl)" do
@@ -19,12 +20,16 @@ describe "TOML::Config(dsl)" do
     EOF
 
   it "bool" do
+    config.verbose .should eq(true)
     config.verbose?.should eq(true)
     config.verbose = nil
+    config.verbose .should eq(true)
     config.verbose?.should eq(true)
     config.verbose = false
+    config.verbose .should eq(false)
     config.verbose?.should eq(false)
     config.verbose = true
+    config.verbose .should eq(true)
     config.verbose?.should eq(true)
   end
 
@@ -53,5 +58,9 @@ describe "TOML::Config(dsl)" do
     config.db.should eq(0)
     config.db = 1
     config.db.should eq(1)
+  end
+
+  it "strs(with alias)" do
+    config.cmds.should eq ["GET", "SET"]
   end
 end

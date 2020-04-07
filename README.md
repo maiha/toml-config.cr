@@ -10,7 +10,7 @@ handy use of `crystal-toml`
 #### config (ex. `config.toml` )
 
 ```toml
-verbose = false
+verbose = true
 
 [redis]
 host = "127.0.0.1"
@@ -22,14 +22,29 @@ cmds = ["GET", "SET"]
 
 ```crystal
 config = TOML::Config.parse_file("config.toml")
-config["verbose"]          # => false
+```
+
+## Basic API
+
+Basic API provides hash like access and returns a value as Union Types like `Int64 | String | ...`.
+
+```crystal
+config["verbose"]          # => true
 config["xxx"]?             # => nil
 config["xxx"]              # TOML::Config::NotFound
 config["redis/host"]       # => "127.0.0.1"
 config["redis/host"].size  # undefined method 'size'
+```
 
-# syntax sugars to fix type
-config.bool("verbose")         # => false
+## Typed API
+
+If you know the type, the **Typed API** is useful as it will automatically convert the type.
+* supported types: `bool`, `float64`, `int64`, `str`
+* provided api for the type: `xxx`, `xxx?`, `xxxs`, `xxxs?`
+
+```crystal
+config.bool("verbose")         # => true
+config.bool?("verbose")        # => nil
 config.str("redis/host")       # => "127.0.0.1"
 config.str("redis/host").size  # => 9
 config.int("redis/port")       # => 6379
@@ -41,7 +56,10 @@ config.str("xxx")?             # => nil
 config.as_hash("redis").keys   # => ["host", "port", "cmds"]
 ```
 
-#### custom class
+## Macro API
+
+In subclass of `TOML::Config`, type names are provided as class level macro.
+We can use type as DSL to define instance methods.
 
 ```crystal
 class RedisConfig < TOML::Config
@@ -78,8 +96,8 @@ require "toml-config"
 
 ## Breaking Changes
 
-#### v0.5.0
-- `#hash` renamed to `#as_hash` to respect `Object#hash`
+- v0.6.0: `#bool(key)` now raises when the entry is missing. (use `bool?` if you need compatibility)
+- v0.5.0: `#hash` renamed to `#as_hash` to respect `Object#hash`
 
 #### for old crystal
 - v0.1.0 for crystal-0.18.x

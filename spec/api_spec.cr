@@ -43,13 +43,35 @@ describe TOML::Config do
     end
   end
 
-  describe "(typed readers)" do
+  describe "(Typed API)" do
     it "bool" do
+      # found
       config.bool("verbose").should eq(false)
+
+      # not found
+      config.bool?("xxx")   .should eq(nil)
+      config.bools?("xxx")  .should eq(nil)
+      expect_raises TOML::Config::NotFound do
+        config.bool("xxx")
+      end
+      expect_raises TOML::Config::NotFound do
+        config.bools("xxx")
+      end
     end
 
     it "str" do
+      # found
       config.str("redis/host").should eq("127.0.0.1")
+
+      # not found
+      config.str?("xxx")   .should eq(nil)
+      config.strs?("xxx")  .should eq(nil)
+      expect_raises TOML::Config::NotFound do
+        config.str("xxx")
+      end
+      expect_raises TOML::Config::NotFound do
+        config.strs("xxx")
+      end
     end
 
     it "str?" do
@@ -67,18 +89,24 @@ describe TOML::Config do
 
     it "int" do
       config["redis/port"].should be_a(Int64)
-      config.int("redis/port").should be_a(Int32)
+      config.int("redis/port").should be_a(Int64)
+      config.int64("redis/port").should be_a(Int64)
+      config.int32("redis/port").should be_a(Int32)
     end
 
     it "int?" do
       config.int?("redis/port").should eq(6379)
-      config.int?("redis/port").should be_a(Int32)
+      config.int?("redis/port").should be_a(Int64)
+      config.int64?("redis/port").should be_a(Int64)
+      config.int32?("redis/port").should be_a(Int32)
       config.int?("redis/XXXX").should eq(nil)
     end
 
     it "ints" do
       config.ints("redis/save").should eq([900, 1])
-      config.ints("redis/save").should be_a(Array(Int32))
+      config.ints("redis/save").should be_a(Array(Int64))
+      config.int64s("redis/save").should be_a(Array(Int64))
+      config.int32s("redis/save").should be_a(Array(Int32))
 
       expect_raises TOML::Config::NotFound do
         config.ints("redis/XXXX")

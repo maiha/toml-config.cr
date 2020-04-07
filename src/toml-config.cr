@@ -22,7 +22,7 @@ class TOML::Config
   end
 
   ######################################################################
-  ### Primary API
+  ### Basic API
   
   def [](key)
     key = key.to_s
@@ -41,74 +41,6 @@ class TOML::Config
   ######################################################################
   ### Typed API
   
-  def str(key) : String
-    self[key].as(String)
-  end
-
-  def str?(key) : String?
-    self[key]?.as(String?)
-  end
-
-  def strs(key) : Array(String)
-    self[key].as(Array).map(&.to_s).as(Array(String))
-  end
-
-  def int64(key) : Int64
-    self[key].as(Int64)
-  end
-
-  def int64?(key) : Int64?
-    self[key]?.try(&.as(Int64))
-  end
-
-  def int(key) : Int32
-    int64(key).to_i32.as(Int32)
-  end
-
-  def int?(key) : Int32?
-    int64?(key).try(&.to_i32.as(Int32))
-  end
-
-  def ints(key) : Array(Int32)
-    self[key].as(Array).map(&.as(Int64).to_i32).as(Array(Int32))
-  end
-
-  def float64(key) : Float64
-    self[key].as(Float64)
-  end
-
-  def float64?(key) : Float64?
-    self[key]?.try(&.as(Float64))
-  end
-
-  def float64s(key) : Array(Float64)
-    self[key].as(Array).map(&.as(Float64))
-  end
-
-  def float(key)
-    float64(key)
-  end
-
-  def float?(key)
-    float64?(key)
-  end
-
-  def floats(key)
-    float64s(key)
-  end
-
-  def bool(key) : Bool
-    if self[key]?
-      self[key].as(Bool)
-    else
-      false
-    end
-  end
-
-  def bool?(key) : Bool
-    self.bool(key)
-  end
-
   def as_hash(key : String) : Hash
     self[key].as(Hash)
   end
@@ -121,34 +53,125 @@ class TOML::Config
   ### DSL macros
 
   TYPE_MAPS = [
-    {"bool", "Bool"},
-    {"str", "String"},
-    {"int", "Int64"},
-    {"float", "Float64"},
+    # api_name  class      typed
+    {"bool"   , "Bool"   , true},
+    {"str"    , "String" , true},
+    {"int32"  , "Int32"  , true},
+    {"int64"  , "Int64"  , true},
+    {"int"    , "Int64"  , true},
+    {"float32", "Float32", true},
+    {"float64", "Float64", true},
+    {"float"  , "Float64", true},
   ]
 
   {% for tuple in TYPE_MAPS %}
     {%
-      type_s  = tuple[0].id
-      klass_s = tuple[1].id
+      type_s           = tuple[0]
+      klass_s          = tuple[1]
+      define_typed_api = tuple[2]
+
+      type    = type_s.id
+      klass   = klass_s.id
+      is32    = type_s =~ /32$/
+      klass64 = klass_s.gsub(/32/, "64").id
+      to_32   = ("to_" + type_s[0..0] + "32").id
+      as_cast = (is32 ? "as(#{klass64}).#{to_32}" : "as(#{klass})").id
     %}
 
-    macro {{type_s}}(key, m = nil)
+    {% if define_typed_api %}
+      ######################################################################
+      ### Typed API
+  
+      # def str(key) : String
+      #   self[key].as(String)
+      # end
+      def {{type}}(key) : {{klass}}
+        self[key].{{as_cast}}
+      end
+
+      # def str?(key) : String?
+      #   self.str(key)
+      # rescue NotFound
+      #   nil
+      # end
+      def {{type}}?(key) : {{klass}}?
+        self.{{type}}(key)
+      rescue NotFound
+        nil
+      end
+
+      # def strs(key) : Array(String)
+      #   self[key].as(Array).map(&.to_s).as(Array(String))
+      # end
+      def {{type}}s(key) : Array({{klass}})
+        self[key].as(Array).map(&.{{as_cast}}).as(Array({{klass}}))
+      end
+
+      # def strs?(key) : Array(String)?
+      #   self.strs(key)
+      # rescue NotFound
+      #   nil
+      # end
+      def {{type}}s?(key) : Array({{klass}})?
+        self.{{type}}s(key)
+      rescue NotFound
+        nil
+      end
+    {% end %}
+
+    ######################################################################
+    ### DSL API
+
+    # ```crystal
+    # bool "verbose"
+    # str  "redis/host"
+    # int  "redis/db", db
+    # ```
+    macro {{type}}(key, m = nil)
       \{%
-        method = (m || key.id).stringify.gsub(/\//, "_").id
-        key_s  = key.id.stringify
+        method_s = (m || key.id).stringify.gsub(/\//, "_")
+        method   = method_s.id
+        key_s    = key.id.stringify
       %}
 
+      \{% if method_s != {{type_s}} %}
       def \{{method}}?
-        self.{{type_s}}?(\{{key_s}})
+        self.{{type}}?(\{{key_s}})
       end
                                  
       def \{{method}}
-        self.{{type_s}}(\{{key_s}})
+        self.{{type}}(\{{key_s}})
+      end
+      \{% end %}
+
+      def \{{method}}=(v : {{klass}})
+        @paths[\{{key}}] = v
       end
 
-      def \{{method}}=(v : {{klass_s}})
-        @paths[\{{key_s}}] = v
+      def \{{method}}=(v : Nil)
+      end
+    end
+
+    # ```crystal
+    # strs "layouts"
+    # ```
+    macro {{type}}s(key, m = nil)
+      \{%
+        method_s = (m || key.id).stringify.gsub(/\//, "_")
+        method   = method_s.id
+        key_s    = key.id.stringify
+      %}
+
+      def \{{method}}?
+        self.{{type}}s?(\{{key_s}})
+      end
+                                 
+      def \{{method}}
+        self.{{type}}s(\{{key_s}})
+      end
+
+      def \{{method}}=(v : {{klass}})
+        @paths[\{{key}}] = v
       end
 
       def \{{method}}=(v : Nil)
