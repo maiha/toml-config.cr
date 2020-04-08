@@ -87,84 +87,44 @@ describe TOML::Config do
       end
     end
 
-    it "int" do
+    it "i32, i64" do
       config["redis/port"].should be_a(Int64)
-      config.int("redis/port").should be_a(Int64)
-      config.int64("redis/port").should be_a(Int64)
-      config.int32("redis/port").should be_a(Int32)
+      config.i32("redis/port").should be_a(Int32)
+      config.i64("redis/port").should be_a(Int64)
     end
 
-    it "int?" do
-      config.int?("redis/port").should eq(6379)
-      config.int?("redis/port").should be_a(Int64)
-      config.int64?("redis/port").should be_a(Int64)
-      config.int32?("redis/port").should be_a(Int32)
-      config.int?("redis/XXXX").should eq(nil)
+    it "i32?, i64?" do
+      config.i32?("redis/port").should eq(6379)
+      config.i64?("redis/port").should be_a(Int64)
+      config.i32?("redis/port").should be_a(Int32)
+      config.i32?("redis/XXXX").should eq(nil)
     end
 
-    it "ints" do
-      config.ints("redis/save").should eq([900, 1])
-      config.ints("redis/save").should be_a(Array(Int64))
-      config.int64s("redis/save").should be_a(Array(Int64))
-      config.int32s("redis/save").should be_a(Array(Int32))
+    it "i32s, i64s" do
+      config.i32s("redis/save").should eq([900, 1])
+      config.i64s("redis/save").should eq([900, 1])
 
       expect_raises TOML::Config::NotFound do
-        config.ints("redis/XXXX")
+        config.i32s("redis/XXXX")
       end
     end
 
-    it "int64" do
-      config["redis/port"].class.should eq(Int64)
-      config.int64("redis/port").should eq(6379)
-      config.int64("redis/port").should be_a(Int64)
-    end
-
-    it "int64?" do
-      config.int64?("redis/port").should eq(6379)
-      config.int64?("redis/port").should be_a(Int64)
-      config.int64?("redis/XXXX").should eq(nil)
-    end
-
-    it "float64" do
+    it "f32, f64" do
       config["log/interval"].class.should eq(Float64)
-      config.float64("log/interval").should eq(0.1)
-      config.float64("log/interval").should be_a(Float64)
+      config.f32("log/interval").should eq(0.1_f32)
+      config.f64("log/interval").should eq(0.1_f64)
+      config.f32("log/interval").should be_a(Float32)
+      config.f64("log/interval").should be_a(Float64)
     end
 
-    it "float64?" do
-      config.float64?("log/interval").should eq(0.1)
-      config.float64?("log/interval").should be_a(Float64)
-      config.float64?("log/XXXX").should eq(nil)
-    end
-
-    it "float64s" do
-      config.float64s("log/backoffs").should eq([0.1, 0.3, 1.5])
-      config.float64s("log/backoffs").should be_a(Array(Float64))
-
-      expect_raises TOML::Config::NotFound do
-        config.float64s("log/XXXX")
-      end
-    end
-
-    it "float" do
+    it "f32?, f64?" do
       config["log/interval"].class.should eq(Float64)
-      config.float("log/interval").should eq(0.1)
-      config.float("log/interval").should be_a(Float64)
-    end
-
-    it "float?" do
-      config.float?("log/interval").should eq(0.1)
-      config.float?("log/interval").should be_a(Float64)
-      config.float?("log/XXXX").should eq(nil)
-    end
-
-    it "floats" do
-      config.floats("log/backoffs").should eq([0.1, 0.3, 1.5])
-      config.floats("log/backoffs").should be_a(Array(Float64))
-
-      expect_raises TOML::Config::NotFound do
-        config.floats("log/XXXX")
-      end
+      config.f32?("log/interval").should eq(0.1_f32)
+      config.f64?("log/interval").should eq(0.1_f64)
+      config.f32?("log/interval").should be_a(Float32)
+      config.f64?("log/interval").should be_a(Float64)
+      config.f32?("log/XXXX").should eq(nil)
+      config.f64?("log/XXXX").should eq(nil)
     end
 
     it "hash" do

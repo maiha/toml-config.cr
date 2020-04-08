@@ -13,7 +13,7 @@ module NestedFeature
   class Config < TOML::Config
     def_equals_and_hash toml    # ensures not to break `hasher`
 
-    int "foo/ver"
+    i32 "foo/ver"
     as_hash "foo/bar"
   end
     

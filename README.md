@@ -39,7 +39,7 @@ config["redis/host"].size  # undefined method 'size'
 ## Typed API
 
 If you know the type, the **Typed API** is useful as it will automatically convert the type.
-* supported types: `bool`, `float64`, `int64`, `str`
+* supported types: `bool`, `f64`, `f32`, `i32`, `i64`, `str`
 * provided api for the type: `xxx`, `xxx?`, `xxxs`, `xxxs?`
 
 ```crystal
@@ -47,8 +47,8 @@ config.bool("verbose")         # => true
 config.bool?("verbose")        # => nil
 config.str("redis/host")       # => "127.0.0.1"
 config.str("redis/host").size  # => 9
-config.int("redis/port")       # => 6379
-config.int("redis/port").class # => Int32
+config.i32("redis/port")       # => 6379
+config.i32("redis/port").class # => Int32
 config.["redis/port"].class    # => Int64 (TOML default)
 config.strs("redis/cmds")      # => ["GET, "SET"]
 config.str("xxx")              # => TOML::Config::NotFound
@@ -65,6 +65,9 @@ We can use type as DSL to define instance methods.
 class RedisConfig < TOML::Config
   bool verbose
   str  "redis/host", host
+  i32  "redis/port"
+  i32  "redis/db", db
+  strs "redis/cmds", cmds
 
   as_hash "redis"
 end
@@ -73,6 +76,7 @@ config = RedisConfig.parse_file("config.toml")
 config.verbose?   # => false
 config.host       # => "127.0.0.1"
 config.redis.keys # => ["host", "port", "cmds"]
+config.cmds       # => ["GET", "SET"]
 ```
 
 ## Examples
@@ -96,6 +100,7 @@ require "toml-config"
 
 ## Breaking Changes
 
+- v0.6.0: Replace `int`, `float` with `i32`, `i64`, `f32`, `f64`.
 - v0.6.0: `#bool(key)` now raises when the entry is missing. (use `bool?` if you need compatibility)
 - v0.5.0: `#hash` renamed to `#as_hash` to respect `Object#hash`
 

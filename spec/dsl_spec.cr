@@ -3,8 +3,8 @@ require "./spec_helper"
 private class Config < TOML::Config
   bool "verbose"
   str  "redis/host"
-  int  "redis/port"
-  int  "redis/db", db
+  i32  "redis/port"
+  i32  "redis/db", db
   str  "redis/xxx"
   strs "redis/cmds", cmds
 end

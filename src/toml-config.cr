@@ -54,14 +54,12 @@ class TOML::Config
 
   TYPE_MAPS = [
     # api_name  class      typed
-    {"bool"   , "Bool"   , true},
-    {"str"    , "String" , true},
-    {"int32"  , "Int32"  , true},
-    {"int64"  , "Int64"  , true},
-    {"int"    , "Int64"  , true},
-    {"float32", "Float32", true},
-    {"float64", "Float64", true},
-    {"float"  , "Float64", true},
+    {"bool", "Bool"   , true},
+    {"str" , "String" , true},
+    {"i32" , "Int32"  , true},
+    {"i64" , "Int64"  , true},
+    {"f32" , "Float32", true},
+    {"f64" , "Float64", true},
   ]
 
   {% for tuple in TYPE_MAPS %}
@@ -70,12 +68,14 @@ class TOML::Config
       klass_s          = tuple[1]
       define_typed_api = tuple[2]
 
-      type    = type_s.id
-      klass   = klass_s.id
-      is32    = type_s =~ /32$/
-      klass64 = klass_s.gsub(/32/, "64").id
-      to_32   = ("to_" + type_s[0..0] + "32").id
-      as_cast = (is32 ? "as(#{klass64}).#{to_32}" : "as(#{klass})").id
+      type      = type_s.id
+      klass     = klass_s.id
+      is32      = type_s =~ /32$/
+      klass64   = klass_s.gsub(/32/, "64").id
+      to_32     = ("to_" + type_s[0..0] + "32").id
+      to_64     = ("to_" + type_s[0..0] + "64").id
+      down_cast = (is32 ? ".as(#{klass64}).#{to_32}" : ".as(#{klass})").id
+      up_cast   = (is32 ? ".#{to_64}" : "").id
     %}
 
     {% if define_typed_api %}
@@ -86,7 +86,7 @@ class TOML::Config
       #   self[key].as(String)
       # end
       def {{type}}(key) : {{klass}}
-        self[key].{{as_cast}}
+        self[key]{{down_cast}}
       end
 
       # def str?(key) : String?
@@ -104,7 +104,7 @@ class TOML::Config
       #   self[key].as(Array).map(&.to_s).as(Array(String))
       # end
       def {{type}}s(key) : Array({{klass}})
-        self[key].as(Array).map(&.{{as_cast}}).as(Array({{klass}}))
+        self[key].as(Array).map(&{{down_cast}}).as(Array({{klass}}))
       end
 
       # def strs?(key) : Array(String)?
@@ -145,7 +145,7 @@ class TOML::Config
       \{% end %}
 
       def \{{method}}=(v : {{klass}})
-        @paths[\{{key}}] = v
+        @paths[\{{key}}] = v{{up_cast}}
       end
 
       def \{{method}}=(v : Nil)
