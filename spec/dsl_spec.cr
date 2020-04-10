@@ -5,8 +5,9 @@ private class Config < TOML::Config
   str  "redis/host"
   i32  "redis/port"
   i32  "redis/db", db
-  str  "redis/xxx"
+  str  "redis/name"
   strs "redis/cmds", cmds
+  str  url
 end
 
 describe "TOML::Config(dsl)" do
@@ -34,30 +35,45 @@ describe "TOML::Config(dsl)" do
   end
 
   it "str" do
-    config.redis_host.should eq("127.0.0.1")
+    config.redis_host .should eq("127.0.0.1")
     config.redis_host?.should eq("127.0.0.1")
     config.redis_host = nil
-    config.redis_host.should eq("127.0.0.1")
+    config.redis_host .should eq("127.0.0.1")
+    config.redis_host?.should eq("127.0.0.1")
     config.redis_host = "host1"
-    config.redis_host.should eq("host1")
+    config.redis_host .should eq("host1")
+    config.redis_host?.should eq("host1")
 
-    config.redis_xxx?.should eq(nil)
+    config.redis_name?.should eq(nil)
   end
 
-  it "int" do
-    config.redis_port.should eq(6379)
+  it "str(with id)" do
+    config.url?.should eq(nil)
+    config.url = "foo"
+    config.url .should eq("foo")
+    config.url?.should eq("foo")
+  end
+  
+  it "i32" do
+    config.redis_port .should eq(6379)
+    config.redis_port?.should eq(6379)
     config.redis_port = nil
-    config.redis_port.should eq(6379)
+    config.redis_port .should eq(6379)
+    config.redis_port?.should eq(6379)
     config.redis_port = 7000
-    config.redis_port.should eq(7000)
+    config.redis_port .should eq(7000)
+    config.redis_port?.should eq(7000)
   end
 
-  it "int(with alias)" do
-    config.db.should eq(0)
+  it "i32(with alias)" do
+    config.db .should eq(0)
+    config.db?.should eq(0)
     config.db = nil
-    config.db.should eq(0)
+    config.db .should eq(0)
+    config.db?.should eq(0)
     config.db = 1
-    config.db.should eq(1)
+    config.db .should eq(1)
+    config.db?.should eq(1)
   end
 
   it "strs(with alias)" do

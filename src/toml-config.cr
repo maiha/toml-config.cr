@@ -35,6 +35,7 @@ class TOML::Config
   end
 
   def []=(key, val)
+    key = key.to_s
     @paths[key] = val
   end
 
@@ -145,7 +146,7 @@ class TOML::Config
       \{% end %}
 
       def \{{method}}=(v : {{klass}})
-        @paths[\{{key}}] = v{{up_cast}}
+        @paths[\{{key_s}}] = v{{up_cast}}
       end
 
       def \{{method}}=(v : Nil)
