@@ -1,9 +1,9 @@
 name: toml-config
-version: 0.6.1
+version: 0.7.0
 
 dependencies:
   toml:
-    github: maiha/toml.cr
+    github: crystal-community/toml.cr
 
 authors:
   - maiha <maiha@wota.jp>

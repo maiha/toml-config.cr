@@ -3,7 +3,7 @@
 handy use of `crystal-toml`
 
 - https://github.com/manastech/crystal-toml
-- **supported versions** : 0.27.2 0.31.1 0.32.1 0.33.0 0.34.0
+- crystal: 0.36.1
 
 ## Usage
 
@@ -91,7 +91,7 @@ Add this to your application's `shard.yml`:
 dependencies:
   toml-config:
     github: maiha/toml-config.cr
-    version: 0.6.1
+    version: 0.7.0
 ```
 
 ```crystal
@@ -108,7 +108,9 @@ require "toml-config"
 - v0.1.0 for crystal-0.18.x
 - v0.2.0 for crystal-0.19.x, 0.20.4
 - v0.3.1 for crystal-0.23.x, 0.24.x
-- v0.3.2 for crystal-0.25.x, or higher
+- v0.3.2 for crystal-0.25.x
+- v0.6.1 for crystal-0.33.x
+- v0.7.0 for crystal-0.36.x, or higher
 
 ## Contributing
 
