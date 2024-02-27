@@ -5,12 +5,8 @@ crystal: 0.24.1
 
 dependencies:
   toml:
-    # github: manastech/crystal-toml
-    # version: 0.5.0
-    # # until crystal-0.20 patch will be merged
-    github: maiha/crystal-toml
-    # version: ~> 0.6.0
-    branch: crystal-0.24.1
+    github: crystal-community/toml.cr
+    commit: 31cf8856626ac0fee9ebfba971bd9ad4700d7d0a
 
 authors:
   - maiha <maiha@wota.jp>
