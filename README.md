@@ -1,9 +1,9 @@
-# toml-config [![Build Status](https://travis-ci.org/maiha/toml-config.cr.svg?branch=master)](https://travis-ci.org/maiha/toml-config.cr)
+# toml-config [![CI](https://github.com/maiha/toml-config.cr/actions/workflows/ci.yml/badge.svg)](https://github.com/maiha/toml-config.cr/actions)
 
 handy use of `crystal-toml`
 
-- https://github.com/manastech/crystal-toml
-- crystal: 0.36.1
+- https://github.com/crystal-community/toml.cr
+- crystal: 1.18.2 or higher
 
 ## Usage
 
@@ -91,7 +91,7 @@ Add this to your application's `shard.yml`:
 dependencies:
   toml-config:
     github: maiha/toml-config.cr
-    version: 0.7.0
+    version: 0.8.0
 ```
 
 ```crystal
@@ -100,17 +100,18 @@ require "toml-config"
 
 ## Breaking Changes
 
+- v0.8.0: Updated for toml.cr API changes (requires Crystal 1.18.2+)
 - v0.6.0: Replace `int`, `float` with `i32`, `i64`, `f32`, `f64`.
 - v0.6.0: `#bool(key)` now raises when the entry is missing. (use `bool?` if you need compatibility)
 - v0.5.0: `#hash` renamed to `#as_hash` to respect `Object#hash`
 
 #### for old crystal
-- v0.1.0 for crystal-0.18.x
-- v0.2.0 for crystal-0.19.x, 0.20.4
-- v0.3.1 for crystal-0.23.x, 0.24.x
-- v0.3.2 for crystal-0.25.x
+- v0.7.0 for crystal-1.0.0 or lower
 - v0.6.1 for crystal-0.33.x
-- v0.7.0 for crystal-0.36.x, or higher
+- v0.3.2 for crystal-0.25.x
+- v0.3.1 for crystal-0.23.x, 0.24.x
+- v0.2.0 for crystal-0.19.x, 0.20.4
+- v0.1.0 for crystal-0.18.x
 
 ## Contributing
 
