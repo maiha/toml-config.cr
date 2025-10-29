@@ -1,10 +1,31 @@
 SHELL=/bin/bash
+.DELETE_ON_ERROR:
+
+######################################################################
+### dependencies
+
+shard.lock: shard.yml
+	shards install
+
+.PHONY : deps
+deps: shard.lock
+
+.PHONY : update
+update:
+	shards update
+
+.PHONY : clean
+clean:
+	rm -rf lib shard.lock
+
+######################################################################
+### test
 
 .PHONY : test
 test: spec check_version_mismatch
 
 .PHONY : spec
-spec:
+spec: deps
 	crystal spec -v --fail-fast
 
 .PHONY : check_version_mismatch
