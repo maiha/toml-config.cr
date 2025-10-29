@@ -1,7 +1,7 @@
 require "toml"
 
 class TOML::Config
-  alias Type = Hash(String, TOML::Type)
+  alias Type = Hash(String, TOML::Any)
 
   class NotFound < Exception
   end
@@ -17,7 +17,7 @@ class TOML::Config
   getter toml
 
   def initialize(@toml : Type)
-    @paths = Hash(String, TOML::Type).new
+    @paths = Hash(String, TOML::Any::Type).new
     build_path(toml, "")
   end
 
@@ -105,7 +105,7 @@ class TOML::Config
       #   self[key].as(Array).map(&.to_s).as(Array(String))
       # end
       def {{type}}s(key) : Array({{klass}})
-        self[key].as(Array).map(&{{down_cast}}).as(Array({{klass}}))
+        self[key].as(Array).map{|v| v.as(TOML::Any).raw{{down_cast}}}.as(Array({{klass}}))
       end
 
       # def strs?(key) : Array(String)?
@@ -203,16 +203,17 @@ class TOML::Config
   end
 
   private def build_path(toml, path)
-    if toml.is_a?(Hash)
-      toml.each do |(key, val)|
+    value = toml.is_a?(TOML::Any) ? toml.raw : toml
+    if value.is_a?(Hash)
+      value.each do |(key, val)|
         build_path(val, path.empty? ? key : "#{path}/#{key}")
       end
     end
-    @paths[path] = toml
+    @paths[path] = value
   end
 
   # TODO
-  private def update_hash(key, val : TOML::Type)
+  private def update_hash(key, val : TOML::Any::Type)
     hash = @paths
     keys = key.split("/")
     keys.each_with_index do |k, i|
